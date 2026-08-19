@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Self driving robot project</title>
+    <style>
+      @import url('https://fon0--ts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+      :root {
+        --bg: #f4f7fb;
+        --surface: #ffffff;
+        --surface-2: #eef4ff;
+        --ink: #101828;
+        --muted: #667085;
+        --line: #dfe7f3;
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --primary-soft: rgba(37, 99, 235, 0.08);
+        --accent: #14b8a6;
+        --shadow: 0 24px 60px rgba(16, 24, 40, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.6;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      .container {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      header {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 78px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 12px 26px rgba(37, 99, 235, 0.2);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        color: var(--muted);
+        font-size: 0.96rem;
+      }
+
+      .nav-links a:hover {
+        color: var(--ink);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        padding: 14px 22px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: 0 16px 30px rgba(37, 99, 235, 0.2);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background: white;
+        border-color: var(--line);
+        color: var(--ink);
+      }
+
+      .hero {
+        padding: 72px 0 40px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 42px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        line-height: 1.04;
+        letter-spacing: -0.06em;
+        margin: 18px 0 18px;
+      }
+
+      .lead {
+        font-size: 1.08rem;
+        color: var(--muted);
+        max-width: 620px;
+        margin-bottom: 28px;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+      }
+
+      .stat {
+        min-width: 120px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.6rem;
+        letter-spacing: -0.05em;
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .hero-visual {
+        position: relative;
+      }
+
+      .dashboard {
+        background: linear-gradient(180deg, #ffffff, #edf4ff);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .dashboard-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .traffic {
+        display: flex;
+        gap: 8px;
+      }
+
+      .traffic span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .traffic span:nth-child(1) { background: #f87171; }
+      .traffic span:nth-child(2) { background: #fbbf24; }
+      .traffic span:nth-child(3) { background: #34d399; }
+
+      .browser-bar {
+        width: 120px;
+        height: 10px;
+        background: #eef2ff;
+        border-radius: 999px;
+      }
+
+      .dashboard-body {
+        padding: 26px 22px 24px;
+      }
+
+      .chart-card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+        margin-bottom: 18px;
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .chip {
+        background: var(--primary-soft);
+        color: var(--primary);
+        padding: 7px 10px;
+        border-radius: 10px;
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      .bars {
+        display: flex;
+        align-items: end;
+        gap: 12px;
+        height: 120px;
+      }
+
+      .bars span {
+        flex: 1;
+        border-radius: 10px 10px 0 0;
+        background: linear-gradient(180deg, #93c5fd, #2563eb);
+      }
+
+      .mini-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .mini-card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .mini-card strong {
+        display: block;
+        font-size: 1.5rem;
+        letter-spacing: -0.05em;
+      }
+
+      .section {
+        padding: 54px 0;
+      }
+
+      .section-header {
+        max-width: 640px;
+        margin-bottom: 28px;
+      }
+
+      .section-header h2 {
+        margin: 12px 0 10px;
+        font-size: clamp(2rem, 3vw, 2.9rem);
+        letter-spacing: -0.05em;
+        line-height: 1.1;
+      }
+
+      .section-header p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .feature-card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 26px 22px;
+        box-shadow: 0 20px 35px rgba(15, 23, 42, 0.04);
+      }
+
+      .icon {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #dbeafe, #ccfbf1);
+        color: var(--primary-dark);
+        font-size: 1.4rem;
+        margin-bottom: 18px;
+      }
+
+      .feature-card h3 {
+        margin: 0 0 12px;
+        font-size: 1.25rem;
+      }
+
+      .feature-card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .process {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .step {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 24px 22px;
+      }
+
+      .step-number {
+        display: inline-flex;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-weight: 800;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+
+      .step h3 {
+        margin: 0 0 10px;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .cta-box {
+        background: linear-gradient(135deg, #0f172a, #1d4ed8);
+        color: white;
+        border-radius: 28px;
+        padding: 42px 34px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .cta-box h2 {
+        margin: 0 0 8px;
+        font-size: clamp(2rem, 2.5vw, 2.8rem);
+        letter-spacing: -0.05em;
+      }
+
+      .cta-box p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      footer {
+        padding: 28px 0 44px;
+        color: var(--muted);
+      }
+
+      .footer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        border-top: 1px solid var(--line);
+        padding-top: 22px;
+      }
+
+      @media (max-width: 900px) {
+        .hero-grid,
+        .features,
+        .process,
+        .cta-box {
+          grid-template-columns: 1fr;
+          display: grid;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .cta-box {
+          display: grid;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .nav {
+          min-height: 68px;
+        }
+
+        .nav-actions .btn-secondary {
+          display: none;
+        }
+
+        .cta-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .mini-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a href="#" class="brand" aria-label="Self Driving robot home">
+          <span class="brand-mark">S</span>
+          <span>Self Driving robot</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="file:///Users/doyulan/Desktop/howistarted.html">Services</a>
+          <a href="file:///Users/doyulan/Desktop/howistarted.html">About</a>
+          <a href="file:///Users/doyulan/Desktop/howistarted.html">Process</a>
+          <a href="file:///Users/doyulan/Desktop/howistarted.html">Pricing</a>
+          <a href="file:///Users/doyulan/Desktop/howistarted.html">Contact</a>
+        </nav>
+
+        <div class="nav-actions"> 
+          <a href="file:///Users/doyulan/Desktop/howistarted.html" class="btn btn-secondary" target="_blank">Why Us</a>
+          <a href="file:///Users/doyulan/Desktop/howistarted.html" class="btn btn-primary" target="_blank">Fund A 13 year olds selfdriving robot project</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <div class="eyebrow">A 13 year old's journey to robot automation</div>
+            <h1>Help a 13 year old build a self-driving robot.</h1>
+            <p class="lead">
+              fHi I'm Doyul An, a 13 year old who is passionate about robotics and automation. I have been working on a self-driving robot project and I need your support to bring this vision to life. Your contribution will help me fund the necessary components, tools, and resources to complete this exciting project and accomplish my goal of building a self-driving robot.
+            </p>
+
+            <div class="cta-row">
+              <a href="file:///Users/doyulan/Desktop/howistarted.html" class="btn btn-primary" target="_blank">How I started</a>
+              <a href="file:///Users/doyulan/Desktop/howistarted.html" class="btn btn-secondary" target="_blank">Fund A 13 year olds selfdriving robot project</a>
+            </div>
+
+            <div class="stats" aria-label="Company stats">
+              <div class="stat">
+                <strong>Community Driven</strong>
+                <span>built on your feedback</span>
+              </div>
+              <div class="stat">
+                <strong>Open Source</strong>
+                <span>feedback welcomed</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-label="Website dashboard preview">
+            <div class="dashboard">
+              <div class="dashboard-top">
+                <div class="traffic">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="browser-bar"></div>
+              </div>
+
+              <div class="dashboard-body">
+                <div class="chart-card">
+                  <div class="chart-header">
+                    <strong>Fundraising Progress</strong>
+                    <span class="chip">$200 Raised</span>
+                  </div>
+                  <div class="bars" aria-hidden="true">
+                    <span style="height: 10%;" title="Month 1: $20"></span>
+                    <span style="height: 20%;" title="Month 2: $40"></span>
+                    <span style="height: 30%;" title="Month 3: $60"></span>
+                    <span style="height: 40%;" title="Month 4: $80"></span>
+                    <span style="height: 50%;" title="Month 5: $100"></span>
+                    <span style="height: 100%;" title="Month 6: $200"></span>
+                  </div>
+                </div>
+
+                <div class="mini-grid">
+                  <div class="mini-card">
+                    <span class="chip">Money Raised</span>
+                    <strong>
+                      $200</strong>
+                    <small>Collected so far</small>
+                  </div>
+                  <div class="mini-card">
+                    <span class="chip">My Goal</span>
+                    <strong>$5000</strong>
+                    <small>Funding target</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="section">
+        <div class="container">
+          <div class="section-header">
+            <div class="eyebrow">What I’m doing</div>
+            <h2>Learning step by step, building toward a working robot.</h2>
+            <p>
+              I am growing this project one lesson at a time, with real effort every day and a clear goal: a self-driving robot that works.
+            </p>
+          </div>
+
+          <div class="features">
+            <article class="feature-card">
+              <div class="icon">✦</div>
+              <h3>Learn step by step</h3>
+              <p>I study robotics, coding, electronics, and design in small steps so each skill helps me build the next one.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon">▣</div>
+              <h3>Work on it every day</h3>
+              <p>I spend time each day testing, improving, and fixing problems so this project keeps moving forward.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon">↗</div>
+              <h3>Need funding badly</h3>
+              <p>I need support for parts, tools, and materials to keep building and make this project a real working robot.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="process" class="section">
+        <div class="container">
+          <div class="section-header">
+            <div class="eyebrow">My process</div>
+            <h2>One step at a time, every day, toward the goal.</h2>
+          </div>
+
+          <div class="process">
+            <article class="step">
+              <div class="step-number">1</div>
+              <h3>Learn</h3>
+              <p>I study and practice robotics, coding, and problem-solving in small steps so I can understand each part properly.</p>
+            </article>
+
+            <article class="step">
+              <div class="step-number">2</div>
+              <h3>Build</h3>
+              <p>I work on the project every day, testing ideas, fixing mistakes, and improving the robot little by little.</p>
+            </article>
+
+            <article class="step">
+              <div class="step-number">3</div>
+              <h3>Need support</h3>
+              <p>I need funding to buy components, tools, and materials so I can keep moving and finish this dream.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+
+      <section id="about" class="section">
+        <div class="container">
+          <div class="cta-box">
+            <div>
+              <h2>This project needs help to keep moving forward.</h2>
+              <p>I'm working on it every day, and I desperately need funding for parts, tools, and materials to build a real self-driving robot.</p>
+            </div>
+            <a href="#about" class="btn btn-primary" target="_blank">Support this project</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contact">
+      <div class="container footer-row">
+        <div class="brand">
+          <span class="brand-mark">N</span>
+          <span>Self Driving robot</span>
+        </div>
+        <span>© <span id="year"></span> Doyul An . All rights reserved.</span>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
+
